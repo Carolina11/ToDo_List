@@ -1,14 +1,14 @@
-## React-Boilerplate
+## To Do List
 
-A React-Boilerplate for the Technopathic Full-Stack Web Development series.
+A To Do List which can be updated by the user.
 
 This boilerplate includes generators for containers and components. It includes features such as CSS-loading and Styled-Components. React-Icons, React-Responsive, and Material-UI are also included by default for UI/UX design.
 
 ## Getting Started
 To quickly get started, fork this repo and clone it onto your local computer. Then run `npm install` to install all of the necessary libraries.
 ```
-git clone https://github.com/Technopathic/react-boilerplate.git
-cd react-boilerplate
+git clone https://github.com/Carolina11/ToDo_List.git
+cd ToDo_List
 npm install
 ```
 
@@ -25,6 +25,7 @@ To generate Components:
 
 ## Thanks
 Special thanks to MXSTBR for his React-Boilerplate and the original build scripts.
+Also, to Nadeem Soharab for instruction on how to use them!
 
 ## License
 MIT

@@ -8,8 +8,8 @@
 .todoList {
   display: flex;
   flex-direction: column;
-  width: 50%;
-  margin: 0;
+  width: 60%;
+  margin: 0 auto;
 }
 .listItem {
   background: #ccc;
@@ -17,6 +17,11 @@
   margin: 10px;
   border-radius: 5px;
   font-variant: small-caps;
+  cursor: url(http://www.rw-designer.com/cursor-view/102050.png), pointer;
+}
+.checkMark {
+  color: #090;
+  margin-right: 10px;
 }
 .inputContainer {
   width: 40%;
