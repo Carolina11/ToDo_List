@@ -8,6 +8,7 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import FaCheck from 'react-icons/lib/fa/check';
+import TIDeleteOutline from 'react-icons/lib/ti/delete-outline';
 
 import './style.css';
 import './styleM.css';
@@ -22,14 +23,71 @@ export default class Home extends React.PureComponent {
     }
   };
 
+  componentWillMount() {
+    this.getTasks();
+  };
+
   componentDidMount () {
     this.todoInput.focus();
+  };
+
+  getTasks = () => {
+    fetch('http://localhost:8000/api/getTasks', {
+      method:'GET'
+    })
+    .then(function(response){
+    return response.json();
+    })
+    .then(function(json) {
+      this.setState({
+        listItems:json.tasks
+      })
+    }.bind(this))
+  };
+
+  storeTask = () => {
+    let data = new FormData();
+    data.append('taskContent', this.state.inputItem);
+
+    fetch('http://localhost:8000/api/storeTask', {
+      method: 'POST',
+      body:data
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      let listItems = this.state.listItems;
+      listItems.push(json.task);
+      this.setState({
+        listItems:listItems
+      })
+      this.forceUpdate();
+    }.bind(this))
+  };
+
+  destroyOne = (id, index) => {
+    fetch('http://localhost:8000/api/destroyOne/' + id, {
+      method:'POST',
+      mode: 'no cors'
+    })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      let listItems = this.state.listItems;
+      listItems.splice(index, 1);
+      this.setState({
+        listItems:listItems
+      })
+      this.forceUpdate();
+    }.bind(this))
   }
 
   submitForm = (event) => {
     if(event.keyCode == 13){
        // submit
-       this.storeItem();
+       this.storeTask();
      }
   };
 
@@ -37,26 +95,8 @@ export default class Home extends React.PureComponent {
     this.setState({
       inputItem:event.target.value
     })
-  }
+  };
 
-  storeItem = () => {
-    var listItems = this.state.listItems;
-    var inputItem = this.state.inputItem;
-
-    if(inputItem !== "") {
-      let newItem = {
-        itemText:inputItem,
-        toggle:{display:'none'}
-      }
-
-      listItems.push(newItem);
-
-      this.setState ({
-        listItems: listItems,
-        inputItem: ""
-      })
-    }
-  }
   strikeThrough = (event, index) => {
     let listItems = this.state.listItems;
     let item = event.target;
@@ -69,7 +109,7 @@ export default class Home extends React.PureComponent {
       listItems:listItems
     })
     this.forceUpdate();
-  }
+  };
 
   render() {
     return (
@@ -78,19 +118,22 @@ export default class Home extends React.PureComponent {
 
         <div className="inputContainer">
           <input type="text" className="todoInput" id="todoInput" ref={(todoInput) => {this.todoInput = todoInput;}} placeholder="(Type here)" value={this.state.inputItem} onChange={this.handleItem} onKeyDown={this.submitForm} />
-          <input type="submit" className="todoButton" value="Add to list" onClick={this.storeItem} />
+          <input type="submit" className="todoButton" value="Add to list" onClick={this.storeTask} />
         </div>
         <div className="todoList">
           {this.state.listItems.map((item, index) => (
-            <div className="listItem" key={index}  onClick={(event) => this.strikeThrough(event, index)}>
-              <FaCheck className="checkMark" style={item.toggle}></FaCheck> {item.itemText}
+            <div className="listBox">
+              <div className="listItem" key={index}  onClick={(event) => this.strikeThrough(event, index)}>
+                <FaCheck className="checkMark" style={item.toggle}></FaCheck>
+                {item.taskContent}</div>
+                <TIDeleteOutline className="deleteButton" onClick={() => this.destroyOne(item.id, index)}></TIDeleteOutline>
             </div>
-          ))};
+          ))}
         </div>
       </div>
     );
   };
-}
+};
 
 Home.contextTypes = {
   router: React.PropTypes.object
